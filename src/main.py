@@ -35,4 +35,5 @@ TODO:
     - proximal operator not required for L-BFGS algorithm (optional param of BaseSolver ??)
     - check proximal step params !!!
     - do correct ista impl -> check work -> extend solver with other algos
+    - do readme
 """
