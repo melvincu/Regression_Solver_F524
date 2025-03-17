@@ -4,36 +4,47 @@ from sklearn.datasets import load_diabetes
 
 from line_search import * # TODO: abstraction
 
-from proximal_operators import L1Prox, ElasticNetProx
-from algorithms import ISTA
+from regulirizers import L1Regulirizer, ElasticNetRegulirizer
+from algorithms import ISTA, GradientDesc
 
 
 def main():
-    # ----- Data -----
-    data = load_diabetes()
-    X, y  = data.data, data.target
+    # --------------- Data ---------------
+    # data = load_diabetes()
+    # X, y  = data.data, data.target
+    
+    # --------------- Synth Data ---------------
+    np.random.seed(42)
+    m, n  = 100, 3
+    
+    X = np.random.randn(m, n) # features
+    B = np.array([[2], [-3], [1]])  # True weights
+    w = np.random.randn(m, 1) * 0.5  # noise
+    
+    # (reconstruct target y based on samples X, weights B and rand noise w)
+    y = X @ B + w # y = XB + w 
     
     #############################################################
-    # eg. fixed stepsize ISTA for elastic-net regression 
+    # eg. ISTA with fixed stepsize on l1-regression 
     #############################################################
     
     line_search = FixedStepSize(X)
-    prox_op = ElasticNetProx(0.1, 0.1)
-    solver = ISTA(line_search, prox_op)
+    prox_op = L1Regulirizer(0.1)
+    solver = ISTA(line_search, prox_op)    
+    # solver = GradientDesc(line_search, prox_op)
     
-    w_ista = solver.solve(X, y)
-    print(f"ISTA sol = {w_ista}")
+    ista_B = solver.solve(X, y)
+    
+    print(f"ISTA_B = {ista_B}")
+    print(f"B = {B}")
     
 if __name__ == '__main__':
     main()
     
-
 """
 TODO:
     - load data / find regr dataset
-    - line search abstraction / decouple
-    - proximal operator not required for L-BFGS algorithm (optional param of BaseSolver ??)
-    - check proximal step params !!!
-    - do correct ista impl -> check work -> extend solver with other algos
+    - do l2 and elastic net regulirizer proximal operators correctly
+    - add line search to solve methods - currently just do cst step size 0.01 (abstraction too)
     - do readme
 """

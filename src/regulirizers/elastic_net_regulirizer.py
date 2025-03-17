@@ -1,10 +1,10 @@
 import numpy as np
 
-from .base_prox_op import BaseProxOp
-from .l1_prox_op import L1Prox
-from l2_prox_op import L2Prox
+from .regularizer import Regularizer
+from .l1_regulirizer import L1Regulirizer
+from .l2_regulirizer import L2Regulirizer
 
-class ElasticNetProx(BaseProxOp):
+class ElasticNetRegulirizer(Regularizer):
     """
     (l1 + l2)-norm proximal operator
     
@@ -18,6 +18,9 @@ class ElasticNetProx(BaseProxOp):
         self.lbd1 = lbd1
         self.lbd2 = lbd2
         
-    def apply(self, x):
+    def prox_op(self, x, t):
         # TODO: initialize L1 and L2 operator objects directly (in init) instead of creating them eveyr algo iteration !!
-        return L2Prox(self.lbd2).apply(x) * L1Prox(self.lbd1).apply(x)
+        return L2Regulirizer(self.lbd2).prox_op(x, t) * L1Regulirizer(self.lbd1).prox_op(x, t)
+    
+    def compute_reg_loss(self, x):
+        return 1

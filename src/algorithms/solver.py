@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import numpy as np
 
-class BaseSolver(ABC):
+class Solver(ABC):
     """
     Base solver abstract class
     
@@ -21,3 +21,6 @@ class BaseSolver(ABC):
     
     def _check_convergence(self, x_old, x_new):
         return np.linalg.norm(x_new - x_old) < self.eps
+    
+    def get_loss_history(self):
+        return self.loss_history
