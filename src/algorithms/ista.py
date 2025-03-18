@@ -9,8 +9,8 @@ class ISTA(Solver):
         self.line_search = line_search
         self.regulirizer = regulirizer
     
-    def solve(self, X, y):        
-        n = X.shape[1] # num features
+    def solve(self, A, b):        
+        n = A.shape[1] # num features
         x = np.zeros((n,1)) # w0 (nx1)
 
         for _ in range(self.max_iter):
@@ -18,12 +18,12 @@ class ISTA(Solver):
             # compute step size t_k
             t_k = 0.01
             
-            # gradient descent step
-            grad = X.T @ (X@x - y) # TODO: epxlain in report computations and formulations    
-            x_new = self.regulirizer.prox_op(x-t_k*grad, t_k)
-
-            # compute loss (total loss = data loss + reg loss)
-            loss = 0.5 * np.linalg.norm(X @ x_new - y)**2 + self.regulirizer.compute_reg_loss(x)            
+            # gradient descent + shrinkage
+            grad = A.T @ (A@x - b) # loss gradient (SSR)
+            x_new = self.regulirizer.prox_op(x,t_k,grad)
+            
+            # total loss = SSR + reg loss
+            loss = 0.5 * np.linalg.norm(A @ x_new - b)**2 + self.regulirizer.compute_reg_loss(x)            
             self.loss_history.append(loss)
             
             # stop criterion

@@ -16,7 +16,7 @@ class Solver(ABC):
         self.loss_history = []
     
     @abstractmethod
-    def solve(self, X, y):
+    def solve(self, A, b):
         pass
     
     def _check_convergence(self, x_old, x_new):
