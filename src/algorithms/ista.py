@@ -1,5 +1,5 @@
 import numpy as np
-from line_search import *
+from line_searches.line_search import *
 from regulirizers import Regularizer
 from .solver import Solver
 
@@ -16,7 +16,7 @@ class ISTA(Solver):
         for _ in range(self.max_iter):
             
             # compute step size t_k
-            t_k = 0.01
+            t_k = self.line_search.compute_stepsize()
             
             # gradient descent + shrinkage
             grad = A.T @ (A@x - b) # loss gradient (SSR)

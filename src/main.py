@@ -1,9 +1,8 @@
 import numpy as np
 
-from line_search import * # TODO: abstraction
-
 from regulirizers import L1Regulirizer, ElasticNetRegulirizer
 from algorithms import ISTA, GradientDesc
+from line_searches import FixedStepSize, BacktrackingLS
 
 def main():
     # --------------- Data ---------------
@@ -15,20 +14,17 @@ def main():
     m, n  = 100, 3 # 100 samples, 3 features
     
     A = np.random.randn(m, n) # features
-    w = np.array([[2], [-3], [1]])  # True weights (minimizer coord)
-    noise = np.random.randn(m, 1) * 0.5  # noise
-    
-    # (reconstruct target b based on samples A, true weights w and rand noise)
-    b = A @ w + noise
+    w = np.array([[2], [-3], [1]]) # True weights (minimizer coord)
+    noise = np.random.randn(m, 1) * 0.5 # noise
+    b = A @ w + noise # (reconstruct target b based on samples A, true weights w and rand noise)
     
     #############################################################
-    # eg. ISTA with fixed stepsize on l1-regression 
+    # eg. [ISTA] with [fixed stepsize] on [l1-regularization] least squares regression
     #############################################################
     
     line_search = FixedStepSize(A)
-    regulizer = L1Regulirizer(0.01)
+    regulizer = L1Regulirizer(10)
     solver = ISTA(line_search, regulizer)    
-    # solver = GradientDesc(line_search, prox_op)
     
     ista_w = solver.solve(A, b)
     
@@ -43,8 +39,7 @@ TODO:
     several dataset of increasing sizes/shape - imapct of n (num samples) / impact of m (num features) 
     
     - load data, do pipeline: load -> solve -> save measurements/plot!
-    
-    - add line search to solve methods - currently just do cst step size 0.01 (abstraction too)
+    - do backtracking line search (need params unlike constant stepsize - problem with interface computestepszie method !)
     - do readme
     - add code to gather measurements: timer (maybe with decorators??), iteration convergence (gradient norm ?), loss (mse, ssr ?)
 """

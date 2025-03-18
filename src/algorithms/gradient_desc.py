@@ -1,5 +1,5 @@
 import numpy as np
-from line_search import *
+from line_searches.line_search import *
 from .solver import Solver
 
 class GradientDesc(Solver):
