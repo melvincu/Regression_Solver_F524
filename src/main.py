@@ -1,7 +1,7 @@
 import numpy as np
 
 from regulirizers import L1Regulirizer, ElasticNetRegulirizer
-from algorithms import ISTA, GradientDesc
+from algorithms import ISTA, GradientDesc, FISTA
 from line_searches import FixedStepSize, BacktrackingLS
 
 def main():
@@ -24,7 +24,7 @@ def main():
     
     line_search = FixedStepSize(A)
     regulizer = L1Regulirizer(10)
-    solver = ISTA(line_search, regulizer)    
+    solver = FISTA(line_search, regulizer)    
     
     ista_w = solver.solve(A, b)
     
