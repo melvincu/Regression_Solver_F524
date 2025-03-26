@@ -1,3 +1,2 @@
-# expose concrete impl. of solvers
-from .ista import ISTA
-from .gradient_desc import GradientDesc
+from .opti_algorithm import OptiAlgorithm
+from .prox_gradient import ProxGradient
