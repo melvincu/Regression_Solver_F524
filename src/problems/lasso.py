@@ -17,4 +17,5 @@ class Lasso(CompositeProblem):
         return np.sign(x) * np.maximum(np.abs(x) - t*self.lbd, 0)
 
     def obj_value(self, x):
-        pass
+        # 1/2*||Ax-b||_2^2 + lbd||x||_1
+        return 0.5 * np.linalg.norm(self.A @ x - self.b)**2 + self.lbd * np.linalg.norm(x, ord=1)

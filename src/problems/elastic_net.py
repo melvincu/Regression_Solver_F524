@@ -16,6 +16,9 @@ class ElasticNet(CompositeProblem):
     def proximal_op(self, x, t):
         # shrinkage operator
         return np.sign(x) * np.maximum(np.abs(x) - t*self.lbd1, 0)
-    
+
     def obj_value(self, x):
-        pass
+        # 1/2*||Ax-b||_2^2 + 1/2*lbd2||x||_2^2 + lbd1||x||_1
+        return 0.5 * np.linalg.norm(self.A @ x - self.b)**2 + \
+            (0.5 * self.lbd2 * np.linalg.norm(x)**2) + \
+            (self.lbd1 * np.linalg.norm(x, ord=1))

@@ -3,6 +3,7 @@ import numpy as np
 from problems.composite_prob import CompositeProblem
 from .opti_algorithm import OptiAlgorithm
 
+# (FISTA)
 class ProxGradient(OptiAlgorithm):
     def __init__(self, problem:CompositeProblem):
         super().__init__()
