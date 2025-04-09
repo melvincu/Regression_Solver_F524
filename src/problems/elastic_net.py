@@ -9,11 +9,11 @@ class ElasticNet(CompositeProblem):
         self.lbd1 = lbd1
         self.lbd2 = lbd2
         
-    def gradient(self, x):
+    def g_gradient(self, x):
         # A.T (A*x - b) + lb2*x
         return self.A.T @ (self.A@x - self.b) + self.lbd2*x
     
-    def proximal_op(self, x, t):
+    def h_proximal_op(self, x, t):
         # shrinkage operator
         return np.sign(x) * np.maximum(np.abs(x) - t*self.lbd1, 0)
 

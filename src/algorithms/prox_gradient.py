@@ -9,23 +9,25 @@ class ProxGradient(OptiAlgorithm):
         super().__init__()
         self.problem = problem
         
-    def solve(self, A, b):
-        n = A.shape[1]      # num features
-        x = np.zeros((n,1)) # w0 (nx1)
+    def solve(self, A, b, verbose=False):    
+        m,n = A.shape # n_samples, n_features
+        w = np.zeros(n) # (n,) != (nx1)
         
-        for _ in range(self.max_iter):
-            t = self.fixed_stepsize(A)
-
-            # step
-            grad = self.problem.gradient(x)
-            x_new = self.problem.proximal_op(x-t*grad,t)
+        L = self.compute_lipschitz_const(A)
+        step = 1.0/L
+        
+        for iter in range(self.max_iter):
             
-            # loss
-            # loss = problem.value(x) - true # TODO (MSE?)
-            # self.loss_history.append(loss)
-            
-            # stop criterion
-            if self.check_convergence(x, x_new): break
-            x = x_new
+            # ----- proximal gradient step -----
+            g_grad = self.problem.g_gradient(w)
+            w_new = self.problem.h_proximal_op(w-step*g_grad,step)
 
-        return x
+            # ----- check convergence -----
+            if (self.has_converged(w, w_new)): break
+                        
+            # ----- update -----
+            w = w_new
+
+        if verbose: print(f"({iter} iterations)")
+
+        return w

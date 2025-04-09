@@ -8,11 +8,11 @@ class Lasso(CompositeProblem):
         self.b = b  # target
         self.lbd = lbd
         
-    def gradient(self, x):
+    def g_gradient(self, x):
         # A.T (A*x - b)
-        return self.A.T @ (self.A@x - self.b)
+        return self.A.T @ (self.A @ x - self.b)
     
-    def proximal_op(self, x, t):
+    def h_proximal_op(self, x, t):
         # shrinkage operator
         return np.sign(x) * np.maximum(np.abs(x) - t*self.lbd, 0)
 

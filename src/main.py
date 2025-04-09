@@ -1,36 +1,40 @@
 import numpy as np
+import pandas as pd
+from sklearn.metrics import mean_squared_error
 
+from data_processor import get_data
 from problems import Lasso, ElasticNet
-from algorithms import ProxGradient
+from algorithms import ProxGradient, FISTA
+
 
 def main():
+    
+    # --------------- Dataset ---------------
+    print("Loading data ....")     
+    X_train, X_test, y_train, y_test = get_data()
 
-    # --------------- Synth Data ---------------
-    np.random.seed(42)
-    m, n  = 100, 3 # 100 samples, 3 features
-    
-    A = np.random.randn(m, n) # features
-    x = np.array([[2], [-3], [1]]) # True weights (minimizer coord)
-    noise = np.random.randn(m, 1) * 0.5 # noise
-    b = A @ x + noise # (construct target b based on samples A, true weights x and rand noise)
-    
     #############################################################
     # eg. [ISTA] with [fixed stepsize] on [l1-regularization] least squares regression
     #############################################################
-    
-    problem = Lasso(A, b, lbd=0.1)
-    algo = ProxGradient(problem)
-    x_hat = algo.solve(A, b)
-    
-    print(f"x_algo = {x_hat.flatten()}")
-    print(f"x_true = {x.flatten()}")
 
+    print("Solving regression ....")     
+    problem = Lasso(X_train, y_train, lbd=1)
+    algo = ProxGradient(problem)
+    w_ista = algo.solve(X_train, y_train, verbose=True)
+    
+    # results
+    y_pred_train = X_train@w_ista
+    y_pred_test = X_test@w_ista
+    print("train MSE:", mean_squared_error(y_train, y_pred_train))
+    print("test MSE:", mean_squared_error(y_test, y_pred_test))
+
+    
 if __name__ == '__main__':
     main()
 
 """
 TODO:
-    - FISTA
-    - loss history
+    - loss history, plots, stats, ....
     - backtracking line search
+    - add at least one other problem (glm, logistic, svm, ...) ?
 """
