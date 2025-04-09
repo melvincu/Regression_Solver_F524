@@ -6,23 +6,23 @@
 + year: MA2
 
 ### Description
-Regression solver.
+Modular Regression solver handling general composite optimization problems (proximal gradient), extendable to more optimization problems their solving algorithms (extend abstract classes).
 
-Handle different regularizations:
-+ l1
-+ l2
-+ elastic net (l1-l2)
+Problems currently supported:
++ LASSO
++ Elastic-Net
 
-handle different optimization algorithms:
+Solving algorithms currently implemented:
 + ISTA
 + FISTA
 + L-BFGS
-+ (Dual-FISTA)
-
-### Dependencies
-+ numpy
-+ pandas
-+ scikit-learn
 
 ### Usage
-todo
+```
+problem = Problem(X_train, y_train, ...)
+algo = Algo(problem)
+w_pred = algo.solve(X_train, y_train)
+
+y_pred_test = X_test @ w_ista
+print("test MSE:", mean_squared_error(y_test, y_pred_test))
+```

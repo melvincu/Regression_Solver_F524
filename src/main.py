@@ -11,8 +11,10 @@ def main():
     
     # --------------- Dataset ---------------
     print("Loading data ....")     
-    X_train, X_test, y_train, y_test = get_data()
-
+    X_train, X_test, y_train, y_test = get_data() # X(m,n), y(m,)
+    
+    print(y_train.shape)
+    exit(0)
     #############################################################
     # eg. [ISTA] with [fixed stepsize] on [l1-regularization] least squares regression
     #############################################################
@@ -34,9 +36,10 @@ def main():
 if __name__ == '__main__':
     main()
 
+
 """
 TODO:
-    - loss history, plots, stats, ....
+    - loss history, plots, stats, .... (specific class ? ploting ...)
     - backtracking line search
     - add at least one other problem (glm, logistic, svm, ...) ?
 """
