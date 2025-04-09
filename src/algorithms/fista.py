@@ -29,6 +29,10 @@ class FISTA(OptiAlgorithm):
             t_new = 0.5*(1+np.sqrt(1 + 4 * t**2))
             y_new = w_new + ((t-1)/t_new)*(w_new-w)
             
+            # loss history
+            loss = self.problem.obj_value(w_new)
+            self.loss_history.append(loss)
+            
              # ----- check convergence -----
             if (self.has_converged(w, w_new)): break
             

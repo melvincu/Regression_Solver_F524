@@ -11,7 +11,7 @@ class ProxGradient(OptiAlgorithm):
         
     def solve(self, A, b, verbose=False):    
         m,n = A.shape # n_samples, n_features
-        w = np.zeros(n) # (n,) != (nx1)
+        w = np.zeros(n) # (n,) != (nx1) ()
         
         L = self.compute_lipschitz_const(A)
         step = 1.0/L
@@ -22,6 +22,10 @@ class ProxGradient(OptiAlgorithm):
             g_grad = self.problem.g_gradient(w)
             w_new = self.problem.h_proximal_op(w-step*g_grad,step)
 
+            # loss history
+            loss = self.problem.obj_value(w_new)
+            self.loss_history.append(loss)
+            
             # ----- check convergence -----
             if (self.has_converged(w, w_new)): break
                         

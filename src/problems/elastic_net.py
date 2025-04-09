@@ -3,22 +3,22 @@ from problems.composite_prob import CompositeProblem
 
 class ElasticNet(CompositeProblem):
     
-    def __init__(self, A, b, lbd1, lbd2):
-        self.A = A
-        self.b = b
+    def __init__(self, X, y, lbd1, lbd2):
+        self.X = X
+        self.y = y
         self.lbd1 = lbd1
         self.lbd2 = lbd2
         
-    def g_gradient(self, x):
-        # A.T (A*x - b) + lb2*x
-        return self.A.T @ (self.A@x - self.b) + self.lbd2*x
+    def g_gradient(self, w):
+        # X.T (X*w - y) + lb2*w
+        return self.X.T @ (self.X@w - self.y) + self.lbd2*w
     
-    def h_proximal_op(self, x, t):
+    def h_proximal_op(self, w, t):
         # shrinkage operator
-        return np.sign(x) * np.maximum(np.abs(x) - t*self.lbd1, 0)
+        return np.sign(w) * np.maximum(np.abs(w) - t*self.lbd1, 0)
 
-    def obj_value(self, x):
-        # 1/2*||Ax-b||_2^2 + 1/2*lbd2||x||_2^2 + lbd1||x||_1
-        return 0.5 * np.linalg.norm(self.A @ x - self.b)**2 + \
-            (0.5 * self.lbd2 * np.linalg.norm(x)**2) + \
-            (self.lbd1 * np.linalg.norm(x, ord=1))
+    def obj_value(self, w):
+        # 1/2*||Xw-y||_2^2 + 1/2*lbd2||w||_2^2 + lbd1||w||_1
+        return 0.5 * np.linalg.norm(self.X @ w - self.y)**2 + \
+            (0.5 * self.lbd2 * np.linalg.norm(w)**2) + \
+            (self.lbd1 * np.linalg.norm(w, ord=1))
