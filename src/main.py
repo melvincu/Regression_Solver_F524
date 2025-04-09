@@ -19,9 +19,11 @@ def main():
 
     print("Solving regression ....")     
     problem = Lasso(X_train, y_train, lbd=1)
-    algo = ProxGradient(problem)
+    # algo = ProxGradient(problem)
+    algo = FISTA(problem)
+
     w_ista = algo.solve(X_train, y_train, verbose=True)
-    
+
     # results
     y_pred_train = X_train@w_ista
     y_pred_test = X_test@w_ista
