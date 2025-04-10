@@ -8,15 +8,11 @@ from algorithms import ProxGradient, FISTA
 
 def main():
     
-    # --------------- Dataset ---------------
-    print("Loading data ....")
     data_handler = KaggleDataHandler()
     X_train, X_test, y_train, y_test = data_handler.get_data() # X(m,n), y(m,)
     
-    # --------------- Solve ---------------
-    print("Solving regression ....")     
     problem = Lasso(X_train, y_train, lbd=1)
-    algo = FISTA(problem)
+    algo = ProxGradient(problem)
     w_ista = algo.solve(X_train, y_train, verbose=True)
 
     # --------------- Results ---------------
@@ -24,10 +20,6 @@ def main():
     y_pred_test = X_test@w_ista
     print("train MSE:", mean_squared_error(y_train, y_pred_train))
     print("test MSE:", mean_squared_error(y_test, y_pred_test))
-
-    # --------------- Plots ---------------
-    loss_history = algo.get_loss_histroy()
-    sparsity = algo.get_sparsity(w_ista)   
 
 if __name__ == '__main__':
     main()

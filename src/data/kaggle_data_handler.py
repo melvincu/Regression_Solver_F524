@@ -6,7 +6,7 @@ from data.data_handler import DataHandler
 
 class KaggleDataHandler(DataHandler):
     
-    def get_data():
+    def get_data(self):
         # kaggle dataset
         housing = fetch_california_housing()
         
