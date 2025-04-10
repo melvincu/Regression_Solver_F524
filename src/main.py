@@ -1,21 +1,24 @@
 import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_squared_error
+from sklearn.datasets import fetch_california_housing
 
 from data import KaggleDataHandler
 from problems import Lasso, ElasticNet
 from algorithms import ProxGradient, FISTA
 
 def main():
-    
-    data_handler = KaggleDataHandler()
+    # data
+    dataset = fetch_california_housing()
+    data_handler = KaggleDataHandler(dataset)
     X_train, X_test, y_train, y_test = data_handler.get_data() # X(m,n), y(m,)
     
+    # solve
     problem = Lasso(X_train, y_train, lbd=1)
     algo = ProxGradient(problem)
     w_ista = algo.solve(X_train, y_train, verbose=True)
 
-    # --------------- Results ---------------
+    # results
     y_pred_train = X_train@w_ista
     y_pred_test = X_test@w_ista
     print("train MSE:", mean_squared_error(y_train, y_pred_train))
