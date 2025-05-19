@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 class CompositeProblem(ABC):
     
     @abstractmethod
-    def g_gradient(self, w):
+    def g_gradient(self, X, y, w):
         """gradient of smooth function g in w"""
         pass
     
@@ -13,6 +13,6 @@ class CompositeProblem(ABC):
         "proximal operator of non smooth function h in w"
         pass
 
-    def obj_value(self, w):
+    def obj_value(self, X, y, w):
         """objective function value in w"""
         pass

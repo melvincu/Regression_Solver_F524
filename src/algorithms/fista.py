@@ -1,14 +1,14 @@
 import numpy as np
 
 from problems.composite_prob import CompositeProblem
-from .opti_algorithm import OptiAlgorithm
+from .opti_algorithm import OptiAlgorithm, timeit
 
-# (FISTA)
 class FISTA(OptiAlgorithm):
     def __init__(self, problem:CompositeProblem):
         super().__init__()
         self.problem = problem
-        
+    
+    @timeit    
     def solve(self, A, b, verbose=False):
         m,n = A.shape # n_samples, n_features
         w = np.zeros(n) # (n,) != (nx1)
