@@ -16,7 +16,7 @@ Problems currently supported (Least square based):
 Solving algorithms currently implemented:
 + ISTA
 + FISTA
-+ L-BFGS (todo)
++ BFGS
 
 ### Usage
 ```
