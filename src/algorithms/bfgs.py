@@ -4,13 +4,31 @@ from problems.composite_prob import CompositeProblem
 
 class BFGS(OptiAlgorithm):
     
-    def bfgs_update(self, H, s, y):
+    def update_H(self, H, s, y):
+        '''
+        chap3 formula 3.25
+        '''
+        
         s = s.reshape(-1, 1) # (n,1), to column vector (for (n,n)@(n,1))
         y = y.reshape(-1, 1) # (n,1), to column vector
-        H_new = H - (H @ s @ s.T @ H) / (s.T @ H @ s) + (y @ y.T) / (y.T @ s)
-        return H_new            
+        H_new = H - ((H @ s @ s.T @ H) / (s.T @ H @ s)) + ((y @ y.T) / (y.T @ s))
+        return H_new 
     
-    # Note: can do binary search on linspace [0,1] see (https://medium.com/gaussian-machine/implement-l-bfgs-optimization-from-scratch-3e5c909f9079)
+    def update_B(self, B, s, y):
+        '''
+        chap3 formula 3.26
+        '''
+        
+        n = B.shape[0]
+        s = s.reshape(-1, 1) # (n,1), to column vector (for (n,n)@(n,1))
+        y = y.reshape(-1, 1) # (n,1), to column vector        
+        ratio = 1/(y.T@s)
+        l_part = np.eye(n) - (ratio * (s @ y.T)) 
+        r_part = np.eye(n) - (ratio * (y @ s.T))
+        B_new =  l_part@B@r_part + (ratio * (s @ s.T)) 
+        return B_new
+    
+    # Note: can also do binary search on linspace [0,1] see (https://medium.com/gaussian-machine/implement-l-bfgs-optimization-from-scratch-3e5c909f9079)
     def wolfe_line_search(self, problem:CompositeProblem, A, b, w, d, grad, alpha=0.5):
         t = 1
         c1 = 1e-4 
@@ -30,13 +48,14 @@ class BFGS(OptiAlgorithm):
     def solve(self, problem:CompositeProblem, A, b, verbose=False):
         m,n = A.shape # n_samples, n_features
         w = np.zeros(n) # w0 (n,)
-        H = np.eye(n)  # H0 (Hessian approx - can do smarter initializations)
+        B = np.eye(n)  # B0 (can also do Hessian approx H, can do smarter initializations too)
         
         for iter in range(self.max_iter):
             
             # ----- search direction ----- 
             grad = problem.g_gradient(A, b, w)
-            d = -H@grad
+            
+            d = -B @ grad # (if use H then -np.linalg.inv(H)@grad)
             
             # ----- step -----
             t = self.wolfe_line_search(problem, A, b, w, d, grad)
@@ -54,7 +73,7 @@ class BFGS(OptiAlgorithm):
             grad_new = problem.g_gradient(A, b, w_new)
             s = w_new - w # (n,)
             y =  grad_new - grad # (n,)
-            H = self.bfgs_update(H, s, y) # (n,n)
+            B = self.update_B(B, s, y) # (n,n)
             w = w_new
 
         if verbose: print(f"(Solved in {iter} iterations")

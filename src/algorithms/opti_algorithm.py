@@ -6,7 +6,7 @@ from problems.composite_prob import CompositeProblem
 
 class OptiAlgorithm(ABC):
     
-    def __init__(self, max_iter=1000, eps=1e-5):
+    def __init__(self, max_iter=1000, eps=1e-6):
         self.max_iter = max_iter
         self.eps = eps
         
