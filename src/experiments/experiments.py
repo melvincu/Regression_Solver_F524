@@ -1,7 +1,7 @@
 import pandas as pd
 
-from problems import Lasso, ElasticNet, OLS
-from algorithms import ProxGradient, FISTA, LBFGS
+from problems import Lasso, Ridge, ElasticNet
+from algorithms import ProxGradient, FISTA, BFGS
 
 def make_experiments(X_train, y_train):
         

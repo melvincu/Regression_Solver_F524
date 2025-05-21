@@ -5,15 +5,9 @@ from .opti_algorithm import OptiAlgorithm, timeit
 
 # (FISTA)
 class ProxGradient(OptiAlgorithm):
-    def __init__(self, problem:CompositeProblem):
-        super().__init__()
-        self.problem = problem
-    
-    def name(self):
-        return "prox_grad"
-    
+ 
     @timeit    
-    def solve(self, A, b, verbose=False):    
+    def solve(self, problem:CompositeProblem, A, b, verbose=False):
         m,n = A.shape # n_samples, n_features
         w = np.zeros(n) # (n,) != (nx1) ()
         
@@ -23,11 +17,11 @@ class ProxGradient(OptiAlgorithm):
         for iter in range(self.max_iter):
             
             # ----- proximal gradient step -----
-            g_grad = self.problem.g_gradient(A, b, w)
-            w_new = self.problem.h_proximal_op(w-step*g_grad,step)
+            g_grad = problem.g_gradient(A, b, w)
+            w_new = problem.h_proximal_op(w-step*g_grad,step)
 
             # loss history
-            loss = self.problem.obj_value(A, b, w_new)
+            loss = problem.obj_value(A, b, w_new)
             self.loss_history.append(loss)
             
             # ----- check convergence -----
@@ -40,5 +34,5 @@ class ProxGradient(OptiAlgorithm):
 
         if verbose: print(f"({iter} iterations)")
 
-        res = {"algo":self.name, "tot_t":self.s_time, "it_num":self.s_iter, "w":w}
+        res = {"[ProxGrad] tot_t":self.s_time, "it_num":self.s_iter, "w":w}
         return w

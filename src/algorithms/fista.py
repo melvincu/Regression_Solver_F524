@@ -1,15 +1,11 @@
 import numpy as np
-
-from problems.composite_prob import CompositeProblem
 from .opti_algorithm import OptiAlgorithm, timeit
+from problems.composite_prob import CompositeProblem
 
 class FISTA(OptiAlgorithm):
-    def __init__(self, problem:CompositeProblem):
-        super().__init__()
-        self.problem = problem
-    
+  
     @timeit    
-    def solve(self, A, b, verbose=False):
+    def solve(self, problem:CompositeProblem, A, b, verbose=False):
         m,n = A.shape # n_samples, n_features
         w = np.zeros(n) # (n,) != (nx1)
         y = np.zeros(n) # y0
@@ -22,15 +18,15 @@ class FISTA(OptiAlgorithm):
         for iter in range(self.max_iter):
                 
             # ----- proximal gradient step -----
-            g_grad = self.problem.g_gradient(y)        
-            w_new = self.problem.h_proximal_op(y-step*g_grad,step)
+            g_grad = problem.g_gradient(A, b, y)        
+            w_new = problem.h_proximal_op(y-step*g_grad,step)
         
             # ----- update momentum -----
             t_new = 0.5*(1+np.sqrt(1 + 4 * t**2))
             y_new = w_new + ((t-1)/t_new)*(w_new-w)
             
             # loss history
-            loss = self.problem.obj_value(w_new)
+            loss = problem.obj_value(A, b, w_new)
             self.loss_history.append(loss)
             
              # ----- check convergence -----

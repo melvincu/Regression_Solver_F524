@@ -2,9 +2,11 @@ from abc import ABC, abstractmethod
 import numpy as np
 import time
 
+from problems.composite_prob import CompositeProblem
+
 class OptiAlgorithm(ABC):
     
-    def __init__(self, max_iter=1000, eps=1e-6):
+    def __init__(self, max_iter=1000, eps=1e-5):
         self.max_iter = max_iter
         self.eps = eps
         
@@ -26,8 +28,9 @@ class OptiAlgorithm(ABC):
         return np.linalg.norm(A, ord=2)**2 # L
         
     @abstractmethod
-    def solve(self, verbose=False):
+    def solve(self, problem:CompositeProblem, A, b, verbose=False):
         pass
+
 
 """
 timing decorator
