@@ -5,7 +5,7 @@ class Lasso(CompositeProblem):
     
     def __init__(self, lbd):
         self.lbd = lbd
-        
+    
     def g_gradient(self, X, y, w):
         # X.T (X*w - y)
         return X.T @ (X @ w - y)

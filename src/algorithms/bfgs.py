@@ -1,4 +1,6 @@
 import numpy as np
+import time
+
 from .opti_algorithm import OptiAlgorithm
 from problems.composite_prob import CompositeProblem
 
@@ -50,15 +52,25 @@ class BFGS(OptiAlgorithm):
         w = np.zeros(n) # w0 (n,)
         B = np.eye(n)  # B0 (can also do Hessian approx H, can do smarter initializations too)
         
+        # Timers
+        t_grad_total = 0.0
+        t_hess_total = 0.0
+        t_linesearch_total = 0.0
+        t_start = time.perf_counter()
+        
         for iter in range(self.max_iter):
             
             # ----- search direction ----- 
+            t0 = time.perf_counter()
             grad = problem.g_gradient(A, b, w)
-            
+            t_grad_total += time.perf_counter() - t0
+
             d = -B @ grad # (if use H then -np.linalg.inv(H)@grad)
             
             # ----- step -----
+            t0 = time.perf_counter() # timer not step size related !
             t = self.wolfe_line_search(problem, A, b, w, d, grad)
+            t_linesearch_total += time.perf_counter() - t0
             w_new = w + t*d
             
             # -----  loss history ----- 
@@ -73,9 +85,14 @@ class BFGS(OptiAlgorithm):
             grad_new = problem.g_gradient(A, b, w_new)
             s = w_new - w # (n,)
             y =  grad_new - grad # (n,)
+            
+            t0 = time.perf_counter() # timer not step size related !
             B = self.update_B(B, s, y) # (n,n)
+            t_hess_total += time.perf_counter() - t0
+
             w = w_new
 
-        if verbose: print(f"(Solved in {iter} iterations")
-
-        return w
+        t_total = time.perf_counter() - t_start
+        stats = {"t_grad": t_grad_total, "t_hess": t_hess_total, "t_ls": t_linesearch_total, "t_tot": t_total, "it_num": self.iter_num}
+        
+        return w, stats
