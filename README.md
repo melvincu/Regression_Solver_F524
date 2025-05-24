@@ -9,14 +9,15 @@
 Modular Regression solver handling general composite optimization problems (proximal gradient), extendable to more optimization problems and their solving algorithms (extend abstract classes).
 
 Problems currently supported (Least square based):
-+ LASSO
 + Ridge
++ LASSO
 + Elastic-Net
 
 Solving algorithms currently implemented:
 + ISTA
 + FISTA
 + BFGS
++ DFP
 
 ### Usage
 ```
